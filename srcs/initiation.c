@@ -6,18 +6,34 @@
 /*   By: saghighi <saghighi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/17 16:33:58 by saghighi          #+#    #+#             */
-/*   Updated: 2025/03/17 16:46:05 by saghighi         ###   ########.fr       */
+/*   Updated: 2025/03/18 16:49:35 by saghighi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/so_long.h"
+
+static int	check_window_size(t_play *game)
+{
+	int	window_width;
+	int	window_height;
+
+	window_width = game->map_width * TILE_SIZE;
+	window_height = game->map_height * TILE_SIZE;
+	if (window_width > MAX_SCREEN_WIDTH || window_height > MAX_SCREEN_HEIGHT)
+	{
+		ft_putstr_fd("Error: Map size exceeds screen dimensions!\n", 2);
+		return (1);
+	}
+	return (0);
+}
 
 static void	check_map_validity(t_play *game, char *map_file)
 {
 	get_map_size(map_file, game);
 	if (exit_map_check(game->map) || player_map_check(game->map)
 		|| !check_collectibles(game->map) || check_character(game->map)
-		|| !enclosure_map_check(game->map) || !map_rectangle_check(game->map))
+		|| !enclosure_map_check(game->map) || !map_rectangle_check(game->map)
+		||check_accessibility(game->map) || check_window_size(game))
 	{
 		error_initiation_tx("Error: Invalid map\n", game);
 	}
